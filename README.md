@@ -1,9 +1,11 @@
-BootLeaf
-========
+BootLeaf (WordPress Edition)
+============================
 
 A simple, responsive template for building web mapping applications with [Bootstrap](http://getbootstrap.com/), [Leaflet](http://leafletjs.com/), and [typeahead.js](http://twitter.github.io/typeahead.js/).
 
-### Demo:
+The WordPress Edition is tweaked for application in the [WP Customizr Theme](https://wordpress.org/themes/customizr/). This implies jQuery.no-conflict mode and downgrading to Bootstrap 2.3.2
+
+### Original Demo:
 http://bmcbride.github.io/bootleaf/
 
 ### Features:

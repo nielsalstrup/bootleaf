@@ -1,68 +1,68 @@
-var map, featureList, boroughSearch = [], theaterSearch = [], museumSearch = [];
+var map, featureList, regionSearch = [], listingsSearch = [];
 
-$(window).resize(function() {
+jQuery(window).resize(function() {
   sizeLayerControl();
 });
 
-$(document).on("click", ".feature-row", function(e) {
-  $(document).off("mouseout", ".feature-row", clearHighlight);
-  sidebarClick(parseInt($(this).attr("id"), 10));
+jQuery(document).on("click", ".feature-row", function(e) {
+  jQuery(document).off("mouseout", ".feature-row", clearHighlight);
+  sidebarClick(parseInt(jQuery(this).attr("id"), 10));
 });
 
-$(document).on("mouseover", ".feature-row", function(e) {
-  highlight.clearLayers().addLayer(L.circleMarker([$(this).attr("lat"), $(this).attr("lng")], highlightStyle));
+jQuery(document).on("mouseover", ".feature-row", function(e) {
+  highlight.clearLayers().addLayer(L.circleMarker([jQuery(this).attr("lat"), jQuery(this).attr("lng")], highlightStyle));
 });
 
-$(document).on("mouseout", ".feature-row", clearHighlight);
+jQuery(document).on("mouseout", ".feature-row", clearHighlight);
 
-$("#about-btn").click(function() {
-  $("#aboutModal").modal("show");
-  $(".navbar-collapse.in").collapse("hide");
+jQuery("#about-btn").click(function() {
+  jQuery("#aboutModal").modal("show");
+  jQuery(".navbar-collapse.in").collapse("hide");
   return false;
 });
 
-$("#full-extent-btn").click(function() {
-  map.fitBounds(boroughs.getBounds());
-  $(".navbar-collapse.in").collapse("hide");
+jQuery("#full-extent-btn").click(function() {
+  map.fitBounds(regions.getBounds());
+  jQuery(".navbar-collapse.in").collapse("hide");
   return false;
 });
 
-$("#legend-btn").click(function() {
-  $("#legendModal").modal("show");
-  $(".navbar-collapse.in").collapse("hide");
+jQuery("#legend-btn").click(function() {
+  jQuery("#legendModal").modal("show");
+  jQuery(".navbar-collapse.in").collapse("hide");
   return false;
 });
 
-$("#login-btn").click(function() {
-  $("#loginModal").modal("show");
-  $(".navbar-collapse.in").collapse("hide");
+jQuery("#login-btn").click(function() {
+  jQuery("#loginModal").modal("show");
+  jQuery(".navbar-collapse.in").collapse("hide");
   return false;
 });
 
-$("#list-btn").click(function() {
-  $('#sidebar').toggle();
+jQuery("#list-btn").click(function() {
+  jQuery('#sidebar').toggle();
   map.invalidateSize();
   return false;
 });
 
-$("#nav-btn").click(function() {
-  $(".navbar-collapse").collapse("toggle");
+jQuery("#nav-btn").click(function() {
+  jQuery(".navbar-collapse").collapse("toggle");
   return false;
 });
 
-$("#sidebar-toggle-btn").click(function() {
-  $("#sidebar").toggle();
+jQuery("#sidebar-toggle-btn").click(function() {
+  jQuery("#sidebar").toggle();
   map.invalidateSize();
   return false;
 });
 
-$("#sidebar-hide-btn").click(function() {
-  $('#sidebar').hide();
+jQuery("#sidebar-hide-btn").click(function() {
+  jQuery('#sidebar').hide();
   map.invalidateSize();
 });
 
 function sizeLayerControl() {
-  $(".leaflet-control-layers").css("max-height", $("#map").height() - 50);
+  jQuery(".leaflet-control-layers").css("max-height", jQuery("#map").height() - 50);
 }
 
 function clearHighlight() {
@@ -75,27 +75,19 @@ function sidebarClick(id) {
   layer.fire("click");
   /* Hide sidebar and go to the map on small screens */
   if (document.body.clientWidth <= 767) {
-    $("#sidebar").hide();
+    jQuery("#sidebar").hide();
     map.invalidateSize();
   }
 }
 
 function syncSidebar() {
   /* Empty sidebar features */
-  $("#feature-list tbody").empty();
-  /* Loop through theaters layer and add only features which are in the map bounds */
-  theaters.eachLayer(function (layer) {
-    if (map.hasLayer(theaterLayer)) {
+  jQuery("#feature-list tbody").empty();
+  /* Loop through listingss layer and add only features which are in the map bounds */
+  listingss.eachLayer(function (layer) {
+    if (map.hasLayer(listingsLayer)) {
       if (map.getBounds().contains(layer.getLatLng())) {
-        $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/theater.png"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
-      }
-    }
-  });
-  /* Loop through museums layer and add only features which are in the map bounds */
-  museums.eachLayer(function (layer) {
-    if (map.hasLayer(museumLayer)) {
-      if (map.getBounds().contains(layer.getLatLng())) {
-        $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/museum.png"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+        jQuery("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/listings.png"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="icon-chevron-right pull-right"></i></td></tr>');
       }
     }
   });
@@ -109,6 +101,11 @@ function syncSidebar() {
 }
 
 /* Basemap Layers */
+var baseOSM = L.tileLayer("http://a.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  maxZoom: 19,
+  subdomains: ["1234"],
+  attribution: 'Kortdata (c) <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> bidragsydere, CC-BY-SA.'
+});
 var mapquestOSM = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {
   maxZoom: 19,
   subdomains: ["otile1", "otile2", "otile3", "otile4"],
@@ -137,7 +134,7 @@ var highlightStyle = {
   radius: 10
 };
 
-var boroughs = L.geoJson(null, {
+var regions = L.geoJson(null, {
   style: function (feature) {
     return {
       color: "black",
@@ -147,130 +144,16 @@ var boroughs = L.geoJson(null, {
     };
   },
   onEachFeature: function (feature, layer) {
-    boroughSearch.push({
+    regionSearch.push({
       name: layer.feature.properties.BoroName,
-      source: "Boroughs",
+      source: "Kommuner",
       id: L.stamp(layer),
       bounds: layer.getBounds()
     });
   }
 });
-$.getJSON("data/boroughs.geojson", function (data) {
-  boroughs.addData(data);
-});
-
-var subwayLines = L.geoJson(null, {
-  style: function (feature) {
-    if (feature.properties.route_id === "1" || feature.properties.route_id === "2" || feature.properties.route_id === "3") {
-      return {
-        color: "#ff3135",
-        weight: 3,
-        opacity: 1
-      };
-    }
-    if (feature.properties.route_id === "4" || feature.properties.route_id === "5" || feature.properties.route_id === "6") {
-      return {
-        color: "#009b2e",
-        weight: 3,
-        opacity: 1
-      };
-    }
-    if (feature.properties.route_id === "7") {
-      return {
-        color: "#ce06cb",
-        weight: 3,
-        opacity: 1
-      };
-    }
-    if (feature.properties.route_id === "A" || feature.properties.route_id === "C" || feature.properties.route_id === "E" || feature.properties.route_id === "SI" || feature.properties.route_id === "H") {
-      return {
-        color: "#fd9a00",
-        weight: 3,
-        opacity: 1
-      };
-    }
-    if (feature.properties.route_id === "Air") {
-      return {
-        color: "#ffff00",
-        weight: 3,
-        opacity: 1
-      };
-    }
-    if (feature.properties.route_id === "B" || feature.properties.route_id === "D" || feature.properties.route_id === "F" || feature.properties.route_id === "M") {
-      return {
-        color: "#ffff00",
-        weight: 3,
-        opacity: 1
-      };
-    }
-    if (feature.properties.route_id === "G") {
-      return {
-        color: "#9ace00",
-        weight: 3,
-        opacity: 1
-      };
-    }
-    if (feature.properties.route_id === "FS" || feature.properties.route_id === "GS") {
-      return {
-        color: "#6e6e6e",
-        weight: 3,
-        opacity: 1
-      };
-    }
-    if (feature.properties.route_id === "J" || feature.properties.route_id === "Z") {
-      return {
-        color: "#976900",
-        weight: 3,
-        opacity: 1
-      };
-    }
-    if (feature.properties.route_id === "L") {
-      return {
-        color: "#969696",
-        weight: 3,
-        opacity: 1
-      };
-    }
-    if (feature.properties.route_id === "N" || feature.properties.route_id === "Q" || feature.properties.route_id === "R") {
-      return {
-        color: "#ffff00",
-        weight: 3,
-        opacity: 1
-      };
-    }
-  },
-  onEachFeature: function (feature, layer) {
-    if (feature.properties) {
-      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Division</th><td>" + feature.properties.Division + "</td></tr>" + "<tr><th>Line</th><td>" + feature.properties.Line + "</td></tr>" + "<table>";
-      layer.on({
-        click: function (e) {
-          $("#feature-title").html(feature.properties.Line);
-          $("#feature-info").html(content);
-          $("#featureModal").modal("show");
-
-        }
-      });
-    }
-    layer.on({
-      mouseover: function (e) {
-        var layer = e.target;
-        layer.setStyle({
-          weight: 3,
-          color: "#00FFFF",
-          opacity: 1
-        });
-        if (!L.Browser.ie && !L.Browser.opera) {
-          layer.bringToFront();
-        }
-      },
-      mouseout: function (e) {
-        subwayLines.resetStyle(e.target);
-      }
-    });
-  }
-});
-$.getJSON("data/subways.geojson", function (data) {
-  subwayLines.addData(data);
+jQuery.getJSON("wp-content/themes/minpasning/inc/data/kommuner.geojson", function (data) {
+  regions.addData(data);
 });
 
 /* Single marker cluster layer to hold all clusters */
@@ -281,13 +164,13 @@ var markerClusters = new L.MarkerClusterGroup({
   disableClusteringAtZoom: 16
 });
 
-/* Empty layer placeholder to add to layer control for listening when to add/remove theaters to markerClusters layer */
-var theaterLayer = L.geoJson(null);
-var theaters = L.geoJson(null, {
+/* Empty layer placeholder to add to layer control for listening when to add/remove listingss to markerClusters layer */
+var listingsLayer = L.geoJson(null);
+var listingss = L.geoJson(null, {
   pointToLayer: function (feature, latlng) {
     return L.marker(latlng, {
       icon: L.icon({
-        iconUrl: "assets/img/theater.png",
+        iconUrl: "wp-content/themes/minpasning/images/" + feature.properties.OWNERSHIP + "-" + feature.properties.TYPE + ".png",
         iconSize: [24, 28],
         iconAnchor: [12, 28],
         popupAnchor: [0, -25]
@@ -298,20 +181,20 @@ var theaters = L.geoJson(null, {
   },
   onEachFeature: function (feature, layer) {
     if (feature.properties) {
-      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Name</th><td>" + feature.properties.NAME + "</td></tr>" + "<tr><th>Phone</th><td>" + feature.properties.TEL + "</td></tr>" + "<tr><th>Address</th><td>" + feature.properties.ADDRESS1 + "</td></tr>" + "<tr><th>Website</th><td><a class='url-break' href='" + feature.properties.URL + "' target='_blank'>" + feature.properties.URL + "</a></td></tr>" + "<table>";
+      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Name</th><td>" + feature.properties.NAME + "</td></tr>" + "<tr><th>Telefon</th><td>" + feature.properties.TEL + "</td></tr>" + "<tr><th>Addresse</th><td>" + feature.properties.ADDRESS1 + '<br/>' + feature.properties.ADDRESS2 + "</td></tr>" + "<tr><th>Website</th><td><a class='url-break' href='" + feature.properties.URL + "' target='_blank'>" + feature.properties.URL + "</a></td></tr>" + "<table>";
       layer.on({
         click: function (e) {
-          $("#feature-title").html(feature.properties.NAME);
-          $("#feature-info").html(content);
-          $("#featureModal").modal("show");
+          jQuery("#feature-title").html(feature.properties.NAME);
+          jQuery("#feature-info").html(content);
+          jQuery("#featureModal").modal("show");
           highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
         }
       });
-      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/theater.png"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
-      theaterSearch.push({
+      jQuery("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="wp-content/themes/minpasning/images/' + layer.feature.properties.OWNERSHIP + '-' + layer.feature.properties.TYPE + '.png"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="icon-chevron-right pull-right"></i></td></tr>');
+      listingsSearch.push({
         name: layer.feature.properties.NAME,
         address: layer.feature.properties.ADDRESS1,
-        source: "Theaters",
+        source: "Listings",
         id: L.stamp(layer),
         lat: layer.feature.geometry.coordinates[1],
         lng: layer.feature.geometry.coordinates[0]
@@ -319,80 +202,30 @@ var theaters = L.geoJson(null, {
     }
   }
 });
-$.getJSON("data/DOITT_THEATER_01_13SEPT2010.geojson", function (data) {
-  theaters.addData(data);
-  map.addLayer(theaterLayer);
-});
-
-/* Empty layer placeholder to add to layer control for listening when to add/remove museums to markerClusters layer */
-var museumLayer = L.geoJson(null);
-var museums = L.geoJson(null, {
-  pointToLayer: function (feature, latlng) {
-    return L.marker(latlng, {
-      icon: L.icon({
-        iconUrl: "assets/img/museum.png",
-        iconSize: [24, 28],
-        iconAnchor: [12, 28],
-        popupAnchor: [0, -25]
-      }),
-      title: feature.properties.NAME,
-      riseOnHover: true
-    });
-  },
-  onEachFeature: function (feature, layer) {
-    if (feature.properties) {
-      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Name</th><td>" + feature.properties.NAME + "</td></tr>" + "<tr><th>Phone</th><td>" + feature.properties.TEL + "</td></tr>" + "<tr><th>Address</th><td>" + feature.properties.ADRESS1 + "</td></tr>" + "<tr><th>Website</th><td><a class='url-break' href='" + feature.properties.URL + "' target='_blank'>" + feature.properties.URL + "</a></td></tr>" + "<table>";
-      layer.on({
-        click: function (e) {
-          $("#feature-title").html(feature.properties.NAME);
-          $("#feature-info").html(content);
-          $("#featureModal").modal("show");
-          highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
-        }
-      });
-      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/museum.png"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
-      museumSearch.push({
-        name: layer.feature.properties.NAME,
-        address: layer.feature.properties.ADRESS1,
-        source: "Museums",
-        id: L.stamp(layer),
-        lat: layer.feature.geometry.coordinates[1],
-        lng: layer.feature.geometry.coordinates[0]
-      });
-    }
-  }
-});
-$.getJSON("data/DOITT_MUSEUM_01_13SEPT2010.geojson", function (data) {
-  museums.addData(data);
+jQuery.getJSON("wp-content/themes/minpasning/inc/map-query.php", function (data) {
+  listingss.addData(data);
+  map.addLayer(listingsLayer);
 });
 
 map = L.map("map", {
-  zoom: 10,
-  center: [40.702222, -73.979378],
-  layers: [mapquestOSM, boroughs, markerClusters, highlight],
+  zoom: 8,
+  center: [55.546002, 11.7463939],
+  layers: [baseOSM, regions, markerClusters, highlight],
   zoomControl: false,
   attributionControl: false
 });
 
 /* Layer control listeners that allow for a single markerClusters layer */
 map.on("overlayadd", function(e) {
-  if (e.layer === theaterLayer) {
-    markerClusters.addLayer(theaters);
-    syncSidebar();
-  }
-  if (e.layer === museumLayer) {
-    markerClusters.addLayer(museums);
+  if (e.layer === listingsLayer) {
+    markerClusters.addLayer(listingss);
     syncSidebar();
   }
 });
 
 map.on("overlayremove", function(e) {
-  if (e.layer === theaterLayer) {
-    markerClusters.removeLayer(theaters);
-    syncSidebar();
-  }
-  if (e.layer === museumLayer) {
-    markerClusters.removeLayer(museums);
+  if (e.layer === listingsLayer) {
+    markerClusters.removeLayer(listingss);
     syncSidebar();
   }
 });
@@ -409,9 +242,9 @@ map.on("click", function(e) {
 
 /* Attribution control */
 function updateAttribution(e) {
-  $.each(map._layers, function(index, layer) {
+  jQuery.each(map._layers, function(index, layer) {
     if (layer.getAttribution) {
-      $("#attribution").html((layer.getAttribution()));
+      jQuery("#attribution").html((layer.getAttribution()));
     }
   });
 }
@@ -423,7 +256,7 @@ var attributionControl = L.control({
 });
 attributionControl.onAdd = function (map) {
   var div = L.DomUtil.create("div", "leaflet-control-attribution");
-  div.innerHTML = "<span class='hidden-xs'>Developed by <a href='http://bryanmcbride.com'>bryanmcbride.com</a> | </span><a href='#' onclick='$(\"#attributionModal\").modal(\"show\"); return false;'>Attribution</a>";
+  div.innerHTML = "<span class='hidden-xs'>Udviklet af <a href='http://alstrupnext.com'>alstrupnext</a> | </span><a href='#' onclick='jQuery(\"#attributionModal\").modal(\"show\"); return false;'>Attribution</a>";
   return div;
 };
 map.addControl(attributionControl);
@@ -448,12 +281,12 @@ var locateControl = L.control.locate({
     weight: 1,
     clickable: false
   },
-  icon: "fa fa-location-arrow",
+  icon: "icon-map-marker",
   metric: false,
   strings: {
-    title: "My location",
-    popup: "You are within {distance} {unit} from this point",
-    outsideMapBoundsMsg: "You seem located outside the boundaries of the map"
+    title: "Min placering",
+    popup: "Du er inden for {distance} {unit} fra dette punkt",
+    outsideMapBoundsMsg: "Du befinder dig vist uden for kortet"
   },
   locateOptions: {
     maxZoom: 18,
@@ -472,19 +305,17 @@ if (document.body.clientWidth <= 767) {
 }
 
 var baseLayers = {
-  "Street Map": mapquestOSM,
-  "Aerial Imagery": mapquestOAM,
-  "Imagery with Streets": mapquestHYB
+  "Vejkort": mapquestOSM,
+  "Luftfoto": mapquestOAM,
+  "Luftfoto med veje": mapquestHYB
 };
 
 var groupedOverlays = {
-  "Points of Interest": {
-    "<img src='assets/img/theater.png' width='24' height='28'>&nbsp;Theaters": theaterLayer,
-    "<img src='assets/img/museum.png' width='24' height='28'>&nbsp;Museums": museumLayer
+  "Steder": {
+    "<img src='wp-content/themes/minpasning/images/kommunal-integreret.png' width='24' height='28'>&nbsp;Institutioner": listingsLayer
   },
   "Reference": {
-    "Boroughs": boroughs,
-    "Subway Lines": subwayLines
+    "Kommuner": regions
   }
 };
 
@@ -493,47 +324,47 @@ var layerControl = L.control.groupedLayers(baseLayers, groupedOverlays, {
 }).addTo(map);
 
 /* Highlight search box text on click */
-$("#searchbox").click(function () {
-  $(this).select();
+jQuery("#searchbox").click(function () {
+  jQuery(this).select();
 });
 
 /* Prevent hitting enter from refreshing the page */
-$("#searchbox").keypress(function (e) {
+jQuery("#searchbox").keypress(function (e) {
   if (e.which == 13) {
     e.preventDefault();
   }
 });
 
-$("#featureModal").on("hidden.bs.modal", function (e) {
-  $(document).on("mouseout", ".feature-row", clearHighlight);
+jQuery("#featureModal").on("hidden.bs.modal", function (e) {
+  jQuery(document).on("mouseout", ".feature-row", clearHighlight);
 });
 
 /* Typeahead search functionality */
-$(document).one("ajaxStop", function () {
-  $("#loading").hide();
+jQuery(document).one("ajaxStop", function () {
+  jQuery("#loading").hide();
   sizeLayerControl();
-  /* Fit map to boroughs bounds */
-  map.fitBounds(boroughs.getBounds());
+  /* Fit map to regions bounds */
+  map.fitBounds(regions.getBounds());
   featureList = new List("features", {valueNames: ["feature-name"]});
   featureList.sort("feature-name", {order:"asc"});
 
-  var boroughsBH = new Bloodhound({
-    name: "Boroughs",
+  var regionsBH = new Bloodhound({
+    name: "Kommuner",
     datumTokenizer: function (d) {
       return Bloodhound.tokenizers.whitespace(d.name);
     },
     queryTokenizer: Bloodhound.tokenizers.whitespace,
-    local: boroughSearch,
+    local: regionSearch,
     limit: 10
   });
 
-  var theatersBH = new Bloodhound({
+  var listingssBH = new Bloodhound({
     name: "Theaters",
     datumTokenizer: function (d) {
       return Bloodhound.tokenizers.whitespace(d.name);
     },
     queryTokenizer: Bloodhound.tokenizers.whitespace,
-    local: theaterSearch,
+    local: listingsSearch,
     limit: 10
   });
 
@@ -556,7 +387,7 @@ $(document).one("ajaxStop", function () {
     remote: {
       url: "http://api.geonames.org/searchJSON?username=bootleaf&featureClass=P&maxRows=5&countryCode=US&name_startsWith=%QUERY",
       filter: function (data) {
-        return $.map(data.geonames, function (result) {
+        return jQuery.map(data.geonames, function (result) {
           return {
             name: result.name + ", " + result.adminCode1,
             lat: result.lat,
@@ -568,38 +399,38 @@ $(document).one("ajaxStop", function () {
       ajax: {
         beforeSend: function (jqXhr, settings) {
           settings.url += "&east=" + map.getBounds().getEast() + "&west=" + map.getBounds().getWest() + "&north=" + map.getBounds().getNorth() + "&south=" + map.getBounds().getSouth();
-          $("#searchicon").removeClass("fa-search").addClass("fa-refresh fa-spin");
+          jQuery("#searchicon").removeClass("fa-search").addClass("fa-refresh fa-spin");
         },
         complete: function (jqXHR, status) {
-          $('#searchicon').removeClass("fa-refresh fa-spin").addClass("fa-search");
+          jQuery('#searchicon').removeClass("fa-refresh fa-spin").addClass("fa-search");
         }
       }
     },
     limit: 10
   });
-  boroughsBH.initialize();
-  theatersBH.initialize();
+  regionsBH.initialize();
+  listingssBH.initialize();
   museumsBH.initialize();
   geonamesBH.initialize();
 
   /* instantiate the typeahead UI */
-  $("#searchbox").typeahead({
+  jQuery("#searchbox").typeahead({
     minLength: 3,
     highlight: true,
     hint: false
   }, {
-    name: "Boroughs",
+    name: "Kommuner",
     displayKey: "name",
-    source: boroughsBH.ttAdapter(),
+    source: regionsBH.ttAdapter(),
     templates: {
-      header: "<h4 class='typeahead-header'>Boroughs</h4>"
+      header: "<h4 class='typeahead-header'>Kommuner</h4>"
     }
   }, {
     name: "Theaters",
     displayKey: "name",
-    source: theatersBH.ttAdapter(),
+    source: listingssBH.ttAdapter(),
     templates: {
-      header: "<h4 class='typeahead-header'><img src='assets/img/theater.png' width='24' height='28'>&nbsp;Theaters</h4>",
+      header: "<h4 class='typeahead-header'><img src='assets/img/listings.png' width='24' height='28'>&nbsp;Theaters</h4>",
       suggestion: Handlebars.compile(["{{name}}<br>&nbsp;<small>{{address}}</small>"].join(""))
     }
   }, {
@@ -618,12 +449,12 @@ $(document).one("ajaxStop", function () {
       header: "<h4 class='typeahead-header'><img src='assets/img/globe.png' width='25' height='25'>&nbsp;GeoNames</h4>"
     }
   }).on("typeahead:selected", function (obj, datum) {
-    if (datum.source === "Boroughs") {
+    if (datum.source === "Kommuner") {
       map.fitBounds(datum.bounds);
     }
     if (datum.source === "Theaters") {
-      if (!map.hasLayer(theaterLayer)) {
-        map.addLayer(theaterLayer);
+      if (!map.hasLayer(listingsLayer)) {
+        map.addLayer(listingsLayer);
       }
       map.setView([datum.lat, datum.lng], 17);
       if (map._layers[datum.id]) {
@@ -642,22 +473,22 @@ $(document).one("ajaxStop", function () {
     if (datum.source === "GeoNames") {
       map.setView([datum.lat, datum.lng], 14);
     }
-    if ($(".navbar-collapse").height() > 50) {
-      $(".navbar-collapse").collapse("hide");
+    if (jQuery(".navbar-collapse").height() > 50) {
+      jQuery(".navbar-collapse").collapse("hide");
     }
   }).on("typeahead:opened", function () {
-    $(".navbar-collapse.in").css("max-height", $(document).height() - $(".navbar-header").height());
-    $(".navbar-collapse.in").css("height", $(document).height() - $(".navbar-header").height());
+    jQuery(".navbar-collapse.in").css("max-height", jQuery(document).height() - jQuery(".navbar-header").height());
+    jQuery(".navbar-collapse.in").css("height", jQuery(document).height() - jQuery(".navbar-header").height());
   }).on("typeahead:closed", function () {
-    $(".navbar-collapse.in").css("max-height", "");
-    $(".navbar-collapse.in").css("height", "");
+    jQuery(".navbar-collapse.in").css("max-height", "");
+    jQuery(".navbar-collapse.in").css("height", "");
   });
-  $(".twitter-typeahead").css("position", "static");
-  $(".twitter-typeahead").css("display", "block");
+  jQuery(".twitter-typeahead").css("position", "static");
+  jQuery(".twitter-typeahead").css("display", "block");
 });
 
 // Leaflet patch to make layer control scrollable on touch browsers
-var container = $(".leaflet-control-layers")[0];
+var container = jQuery(".leaflet-control-layers")[0];
 if (!L.Browser.touch) {
   L.DomEvent
   .disableClickPropagation(container)
